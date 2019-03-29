@@ -1,0 +1,5 @@
+﻿cl : Command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  NewTrainingFramework.cpp
+c:\users\apetroaie claudiu\desktop\gameloft\first\proiect_2015\newtrainingframework_2015\newtrainingframework\newtrainingframework.cpp(16): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+c:\users\apetroaie claudiu\desktop\gameloft\first\proiect_2015\newtrainingframework_2015\newtrainingframework\newtrainingframework.cpp(89): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+  NewTrainingFramework.vcxproj -> C:\Users\Apetroaie Claudiu\Desktop\Gameloft\First\proiect_2015\NewTrainingFramework_2015\\BIN-Nvidia\NewTrainingFramework.exe
