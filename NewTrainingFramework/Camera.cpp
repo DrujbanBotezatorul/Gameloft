@@ -18,18 +18,25 @@ Camera::Camera()
 	xAxis = Vector3((GLfloat)1, (GLfloat)0, (GLfloat)0);
 	yAxis = Vector3((GLfloat)0, (GLfloat)1, (GLfloat)0);
 	zAxis = Vector3((GLfloat)0, (GLfloat)0, (GLfloat)1);
-	perspectiveMatrix.SetPerspective(0, 16.0f / 9.0f, 0, 500);
 	viewMatrix.SetIdentity();
 	worldMatrix.SetIdentity();
 	moveSpeed = 1;
-	rotateSpeed = 0;
+	rotateSpeed = 1;
 	Near = 0.2f;
-	Far = 200;
-	fov = 0;
+	Far = 5000;
+	fov = 40;
 	deltaTime = 0.5f;
 
-	perspectiveMatrix.SetPerspective(5, 2, 0.2f, 200);
+	perspectiveMatrix.SetPerspective(fov, 16.0f/9.0f, Near, Far);
 
+	setMatrix();
+
+}
+
+
+void Camera::updateDeltaTime(float deltaTime)
+{
+	this->deltaTime = deltaTime;
 }
 
 Camera::Camera(Vector3 position, Vector3 target)
@@ -48,13 +55,13 @@ void Camera::setAxis()
 {
 	zAxis = -(target - position).Normalize();
 	yAxis = up.Normalize();
-	xAxis = zAxis.Cross(yAxis).Normalize();
+	xAxis = -zAxis.Cross(yAxis).Normalize();
 
 }
 
 void Camera::moveOx(GLfloat directie)
 {
-	Vector3 horizontalMove = zAxis.Cross(yAxis).Normalize() * directie;
+	Vector3 horizontalMove = zAxis.Cross(yAxis).Normalize() * moveSpeed * directie;
 	Vector3 vectorDeplasare = horizontalMove * moveSpeed * deltaTime;
 	position += vectorDeplasare;
 	target += vectorDeplasare;
@@ -64,7 +71,7 @@ void Camera::moveOx(GLfloat directie)
 
 void Camera::moveOy(GLfloat directie)
 {
-	Vector3 upMove = up.Normalize() * directie;
+	Vector3 upMove = up.Normalize() * moveSpeed * directie;
 	Vector3 vectorDeplasare = upMove * moveSpeed * deltaTime;
 	position += vectorDeplasare;
 	target += vectorDeplasare;
@@ -74,7 +81,7 @@ void Camera::moveOy(GLfloat directie)
 
 void Camera::moveOz(GLfloat directie)
 {
-	Vector3 forward = -(target - position).Normalize() * directie;
+	Vector3 forward = -(target - position).Normalize() * moveSpeed * directie;
 	Vector3 vectorDeplasare = forward * moveSpeed * deltaTime;
 	position += vectorDeplasare;
 	target += vectorDeplasare;
@@ -82,11 +89,12 @@ void Camera::moveOz(GLfloat directie)
 	setMatrix();
 }
 
-void Camera::rotateOx(GLfloat alpha)
+void Camera::rotateOx(GLfloat directie)
 {
+	GLfloat alpha = rotateSpeed * deltaTime * directie;
 	Matrix mRotateOx;
 	mRotateOx.SetRotationX(alpha);
-	Vector4 rotatedLocalUp = Vector4(up, 1.0f) * mRotateOx;
+	Vector4 rotatedLocalUp = Vector4(0.0f, 1.0f, 0.0f, 0.0f) * mRotateOx;
 	up = convertVector(rotatedLocalUp * worldMatrix);
 	up = up.Normalize();
 	Vector4 localTarget = Vector4(0.0f, 0.0f, -(target - position).Length(), 1.0f);
@@ -97,8 +105,9 @@ void Camera::rotateOx(GLfloat alpha)
 	
 }
 
-void Camera::rotateOy(GLfloat alpha)
+void Camera::rotateOy(GLfloat directie)
 {
+	GLfloat alpha = rotateSpeed * deltaTime * directie;
 	Matrix mRotateOy;
 	mRotateOy.SetRotationY(alpha);
 	Vector4 localTarget = Vector4(0.0f, 0.0f, -(target - position).Length(), 1.0f);
@@ -109,13 +118,14 @@ void Camera::rotateOy(GLfloat alpha)
 
 }
 
-void Camera::rotateOz(GLfloat alpha)
+void Camera::rotateOz(GLfloat directie)
 {
+	GLfloat alpha = rotateSpeed * deltaTime * directie;
 	Matrix mRotateOz;
 	mRotateOz.SetRotationZ(alpha);
-	Vector4 localTarget = Vector4(up, 1.0f);
-	Vector4 rotatedTarget = localTarget * mRotateOz;
-	target = convertVector(rotatedTarget * worldMatrix);
+	Vector4 localTarget = Vector4(0.0f, 1.0f, 0.0f, 0.0f) * mRotateOz;
+	up = convertVector(localTarget * worldMatrix).Normalize();
+
 
 	setMatrix();
 	
@@ -143,7 +153,8 @@ void Camera::setMatrix()
 	invT.SetTranslation(-position);
 
 	worldMatrix = R * T;
-	viewMatrix = invR * invT;
+	viewMatrix = invT * invR;
+
 
 }
 

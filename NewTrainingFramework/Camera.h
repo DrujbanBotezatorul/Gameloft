@@ -18,6 +18,7 @@ public:
 	void rotateOy(GLfloat);
 	void rotateOz(GLfloat);
 	void updateWorldView();
+	void updateDeltaTime(float);
 
 	Vector3 getPosition() { return position; }
 	Vector3 getTarget() { return target; }
@@ -33,6 +34,7 @@ public:
 	GLfloat getDeltaTime() { return deltaTime; }
 	Matrix getViewMatrix() { return viewMatrix; }
 	Matrix getWorldMatrix() { return worldMatrix; }
+	Matrix getPerspectiveMatrix() { return perspectiveMatrix; }
 
 	void setPosition(Vector3 position) { this->position = position; }
 	void setTarget(Vector3 target) { this->target = target; }
