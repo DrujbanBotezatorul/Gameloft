@@ -20,11 +20,11 @@ Camera::Camera()
 	zAxis = Vector3((GLfloat)0, (GLfloat)0, (GLfloat)1);
 	viewMatrix.SetIdentity();
 	worldMatrix.SetIdentity();
-	moveSpeed = 1;
-	rotateSpeed = 1;
+	moveSpeed = 15;
+	rotateSpeed = 3;
 	Near = 0.2f;
 	Far = 5000;
-	fov = 40;
+	fov = 45;
 	deltaTime = 0.5f;
 
 	perspectiveMatrix.SetPerspective(fov, 16.0f/9.0f, Near, Far);

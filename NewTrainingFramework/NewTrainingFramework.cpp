@@ -8,6 +8,7 @@
 #include <conio.h>
 #include "Globals.h"
 #include "Camera.h"
+#include "Model.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -15,59 +16,30 @@
 using namespace std;
 
 
-GLuint vboId, verticesId, indicesId;
+GLuint vboId, verticesId, indicesId, textureId;
 Shaders myShaders;
 GLfloat alpha = 0, pas = 0.01f;
 Camera camera;
 
-int nrVertices, nrIndices, model[400][3];
-float pos[400][3];
+int nrIndices, width, height, bpp;
+char* arrayPixel;
+float time;
+//const float timeLimit;
 
-void getModel(char* file, int *nrVertices, int *nrIndices, float poz[400][3], int model[400][3])
-{
-	ifstream modelFile (file);
-	string line;
-	int i = 0, x;
-
-	getline(modelFile, line);
-	sscanf(line.c_str(), "NrVertices: %d", nrVertices);
-	while (getline(modelFile, line))
-	{
-		if (line[0] == 'N')
-		{
-			sscanf(line.c_str(), "NrIndices: %d", nrIndices);
-			break;
-		}
-		sscanf(line.c_str(), "   %d. pos:[%f, %f, %f]", &x, &poz[i][0], &poz[i][1], &poz[i][2]);
-		//cout << poz[i][0] << ' '<< poz[i][1] << '\n';
-		i++;
-
-	 }
-
-	i = 0;
-
-	while (getline(modelFile, line))
-	{
-		sscanf(line.c_str(), "   %d.    %d,    %d,    %d", &x, &model[i][0], &model[i][1], &model[i][2]);
-		//cout << model[i][0] << ' ' << model[i][1] << model[i][2] << '\n';
-		i++;
-	}
-
-	modelFile.close();
-
-}
 
 int Init ( ESContext *esContext )
 {
 	
 
-	getModel("C:\\Users\\Apetroaie Claudiu\\Desktop\\Gameloft\\First\\proiect_2015\\NewResourcesPacket\\Models\\Croco.nfg", &nrVertices, &nrIndices, pos, model);
+	//getModel("C:\\Users\\Apetroaie Claudiu\\Desktop\\Gameloft\\First\\proiect_2015\\NewResourcesPacket\\Models\\Croco.nfg", &nrVertices, &nrIndices, pos, model);
 
+	Model model = Model("C:\\Users\\Apetroaie Claudiu\\Desktop\\Gameloft\\First\\proiect_2015\\NewResourcesPacket\\Models\\Croco.nfg");
+	nrIndices = model.nrIndices;
 	glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
 
 	//triangle data (heap)
-	Vertex verticesData[6];
-	Vertex vertices[1000];
+	Vertex2 verticesData[6];
+	/*Vertex2 vertices[1000];
 	int i;
 
 	for (i = 0; i < nrVertices; i++)
@@ -76,18 +48,30 @@ int Init ( ESContext *esContext )
 		vertices[i].pos.y = pos[i][1];
 		vertices[i].pos.z = pos[i][2];
 
-		vertices[i].color.x = 0.0f;
 		vertices[i].color.x = 1.0f;
-		vertices[i].color.x = 0.0f;
+		vertices[i].color.y = 0.0f;
+		vertices[i].color.z = 0.0f;
 	}
 
+	i = 0;
+
+	while (i<nrIndices/3)
+	{
+		model1[3 * i] = model[i][0];
+		model1[3 * i + 1] = model[i][1];
+		model1[3 * i + 2] = model[i][2];
+
+
+		i++;
+	}*/
+	/*
 	verticesData[0].pos.x = -0.5f;  verticesData[0].pos.y = 0.5f;  verticesData[0].pos.z = 0.0f;
 	verticesData[1].pos.x = -0.5f;  verticesData[1].pos.y = -0.5f;  verticesData[1].pos.z = 0.0f;
 	verticesData[2].pos.x = 0.5f;  verticesData[2].pos.y = -0.5f;  verticesData[2].pos.z = 0.0f;
 	verticesData[3].pos.x = -0.5f;  verticesData[3].pos.y = 0.5f;  verticesData[3].pos.z = 0.0f;
 	verticesData[4].pos.x = 0.5f;  verticesData[4].pos.y = 0.5f;  verticesData[4].pos.z = 0.0f;
 	verticesData[5].pos.x = 0.5f;  verticesData[5].pos.y = -0.5f;  verticesData[5].pos.z = 0.0f;
-
+	*/
 	//verticesData[6].pos.x = -0.5f;  verticesData[6].pos.y = 0.5f;  verticesData[6].pos.z = -0.5f;
 	//verticesData[7].pos.x = -0.5f;  verticesData[7].pos.y = -0.5f;  verticesData[7].pos.z = -0.5f;
 	//verticesData[8].pos.x = 0.5f;  verticesData[8].pos.y = -0.5f;  verticesData[8].pos.z = -0.5f;
@@ -109,13 +93,13 @@ int Init ( ESContext *esContext )
 	//verticesData[10].pos.x = 0.5f;  verticesData[10].pos.y = 0.5f;  verticesData[10].pos.z = -0.5f;
 	//verticesData[11].pos.x = 0.5f;  verticesData[11].pos.y = -0.5f;  verticesData[11].pos.z = -0.5f;
 
-	verticesData[0].color.x = 1.0f;  verticesData[0].color.y = 0.0f;  verticesData[0].color.z = 0.0f;
-	verticesData[1].color.x = 0.0f;  verticesData[1].color.y = 1.0f;  verticesData[1].color.z = 0.0f;
+	/*/verticesData[0].color.x = 1.0f;  verticesData[0].color.y = 0.0f;  verticesData[0].color.z = 0.0f;
+	/verticesData[1].color.x = 0.0f;  verticesData[1].color.y = 1.0f;  verticesData[1].color.z = 0.0f;
 	verticesData[2].color.x = 0.0f;  verticesData[2].color.y = 0.0f;  verticesData[2].color.z = 1.0f;
 	verticesData[3].color.x = 1.0f;  verticesData[3].color.y = 0.0f;  verticesData[3].color.z = 0.0f;
 	verticesData[4].color.x = 0.0f;  verticesData[4].color.y = 1.0f;  verticesData[4].color.z = 0.0f;
 	verticesData[5].color.x = 0.0f;  verticesData[5].color.y = 0.0f;  verticesData[5].color.z = 1.0f;
-
+	*/
 	//verticesData[6].color.x = 1.0f;  verticesData[6].color.y = 0.0f;  verticesData[6].color.z = 0.0f;
 	//verticesData[7].color.x = 0.0f;  verticesData[7].color.y = 1.0f;  verticesData[7].color.z = 0.0f;
 	//verticesData[8].color.x = 0.0f;  verticesData[8].color.y = 0.0f;  verticesData[8].color.z = 1.0f;
@@ -131,29 +115,50 @@ int Init ( ESContext *esContext )
 
 	glGenBuffers(1, &verticesId);
 	glBindBuffer(GL_ARRAY_BUFFER, verticesId);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(pos), pos, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, model.nrVertices * sizeof(Vertex), &model.vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &indicesId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(model), model, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model.nrIndices * sizeof(unsigned int), &model.indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glEnable(GL_DEPTH_TEST);
+
+	arrayPixel = LoadTGA("D:\\Projects\\Gameloft\\Resources\\Textures\\Croco.tga", &width, &height, &bpp);
+
+	if (bpp == 24)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, arrayPixel);
+	}
+	else
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, arrayPixel);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	//creation of shaders and program 
-	return myShaders.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
+	return myShaders.Init("../Resources/Shaders/ModelShaderVS.vs", "../Resources/Shaders/ModelShaderFS.fs");
 
 }
 
 void Draw ( ESContext *esContext )
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(myShaders.program);
 
 	//glBindBuffer(GL_ARRAY_BUFFER, vboId);
 	glBindBuffer(GL_ARRAY_BUFFER, verticesId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesId);
-
+	glBindTexture(GL_TEXTURE_2D, textureId);
 	
 	if(myShaders.positionAttribute != -1)
 	{
@@ -161,10 +166,16 @@ void Draw ( ESContext *esContext )
 		glVertexAttribPointer(myShaders.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	}
 
-	if(myShaders.colorAttribute != -1)
+	//if(myShaders.colorAttribute != -1)
+	//{
+	//	glEnableVertexAttribArray(myShaders.colorAttribute);
+	//	glVertexAttribPointer(myShaders.colorAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Vector3)*4));
+	//}
+
+	if (myShaders.uvAttribute != -1)
 	{
-		glEnableVertexAttribArray(myShaders.colorAttribute);
-		glVertexAttribPointer(myShaders.colorAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(Vector3));
+		glEnableVertexAttribArray(myShaders.uvAttribute);
+		glVertexAttribPointer(myShaders.uvAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Vector3) * 4));
 	}
 
 	Matrix mr;
@@ -177,11 +188,18 @@ void Draw ( ESContext *esContext )
 		glUniformMatrix4fv(myShaders.matrixUniform, 1, GL_FALSE, (GLfloat*)mr.m);
 	}
 
+	if (myShaders.textureUniform != -1)
+	{
+		glUniform1i(myShaders.textureUniform, 0);
+	}
+
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDrawElements(GL_TRIANGLES, nrIndices, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, nrIndices, GL_UNSIGNED_INT, 0);
 
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }

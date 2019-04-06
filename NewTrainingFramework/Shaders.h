@@ -9,7 +9,9 @@ public:
 	char fileFS[260];
 	GLint positionAttribute;
 	GLint colorAttribute;
+	GLint uvAttribute;
 	GLint matrixUniform;
+	GLint textureUniform;
 
 	int Init(char * fileVertexShader, char * fileFragmentShader);
 	~Shaders();
