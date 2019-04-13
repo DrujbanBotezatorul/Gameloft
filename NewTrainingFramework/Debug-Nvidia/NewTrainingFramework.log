@@ -1,5 +1,31 @@
 ﻿cl : Command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
   NewTrainingFramework.cpp
 d:\projects\gameloft\utilities\math.h(77): warning C4521: 'Vector3': multiple copy constructors specified
-d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(220): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(146): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(149): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(152): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(163): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(166): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(169): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(173): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(176): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(179): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(183): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(186): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(189): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(192): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(195): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(198): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(201): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(204): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(244): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(247): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(250): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(254): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(257): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(260): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(264): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(267): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(270): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+d:\projects\gameloft\newtrainingframework\newtrainingframework.cpp(400): warning C4305: '-=': truncation from 'double' to 'GLfloat'
   NewTrainingFramework.vcxproj -> D:\Projects\Gameloft\\BIN-Nvidia\NewTrainingFramework.exe

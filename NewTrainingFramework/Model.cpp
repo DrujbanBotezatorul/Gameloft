@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Model.h"
 
-void Model::loadNFG(const char* location)
+void Model::loadNFG(string location)
 {
 	ifstream modelFile(location);
 
@@ -49,7 +49,7 @@ void Model::loadNFG(const char* location)
 
 
 
-Model::Model(const char* location)
+Model::Model(string location)
 {
 	Model::loadNFG(location);
 }

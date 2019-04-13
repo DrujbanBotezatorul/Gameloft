@@ -1,7 +1,9 @@
 // NewTrainingFramework.cpp : Defines the entry point for the console application.
 //
 
+
 #include "stdafx.h"
+#include "../rapidxml-1.13/rapidxml_utils.hpp"
 #include "../Utilities/utilities.h" // if you use STL, please include this line AFTER all other include
 #include "Vertex.h"
 #include "Shaders.h"
@@ -9,9 +11,12 @@
 #include "Globals.h"
 #include "Camera.h"
 #include "Model.h"
+#include "ResourceManager.h"
+#include "SceneManager.h"
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -21,98 +26,278 @@ Shaders myShaders;
 GLfloat alpha = 0, pas = 0.01f;
 Camera camera;
 
+
 int nrIndices, width, height, bpp;
 char* arrayPixel;
 float time;
 //const float timeLimit;
+ResourceManager* resourceManager;
+SceneManager* sceneManager;
 
+void LoadResources()
+{
+	vector<ModelResources> models;
+	vector<ShaderResources> shaders;
+	vector<TextureResources> textures;
+
+	resourceManager = ResourceManager::getInstance();
+
+	using namespace rapidxml;
+	xml_document<> doc;
+	ifstream file("../Resources/resourceManager.xml");
+	stringstream buffer;
+	buffer << file.rdbuf();
+	file.close();
+	string content(buffer.str());
+	doc.parse<0>(&content[0]);
+
+	xml_node<> *pRoot = doc.first_node();
+
+	for (xml_node<> *pNode = pRoot->first_node("models")->first_node("model"); pNode; pNode = pNode->next_sibling("model"))
+	{
+		ModelResources model;
+
+		xml_attribute<> *pAttr = pNode->first_attribute();
+		model.id = atoi(pAttr->value());
+		string path = pNode->first_node()->value();
+		model.path = path;
+
+		models.push_back(model);
+
+	}
+
+	for (xml_node<> *pNode = pRoot->first_node("shaders")->first_node("shader"); pNode; pNode = pNode->next_sibling("shader"))
+	{
+		ShaderResources shader;
+
+		xml_attribute<> *pAttr = pNode->first_attribute();
+		shader.id = atoi(pAttr->value());
+		xml_node<> *firstNode = pNode->first_node();
+		string path = firstNode->value();
+		shader.fileVS = path;
+		firstNode = firstNode->next_sibling();
+		path = firstNode->value();
+		shader.fileFS = path;
+
+		shaders.push_back(shader);
+
+	}
+
+	for (xml_node<> *pNode = pRoot->first_node("textures")->first_node("texture"); pNode; pNode = pNode->next_sibling("texture"))
+	{
+		TextureResources texture;
+
+		xml_attribute<> *pAttr = pNode->first_attribute();
+		texture.id = atoi(pAttr->value());
+		pAttr = pAttr->next_attribute();
+		texture.type = pAttr->value();
+
+		xml_node<> *currentNode = pNode->first_node();
+		string strValue = currentNode->value();
+		texture.path = strValue;
+
+		currentNode = currentNode->next_sibling();
+		strValue = currentNode->value();
+		texture.minFilter = strValue;
+
+		currentNode = currentNode->next_sibling();
+		strValue = currentNode->value();
+		texture.magFilter = strValue;
+
+		currentNode = currentNode->next_sibling();
+		strValue = currentNode->value();
+		texture.wrapS = strValue;
+
+		currentNode = currentNode->next_sibling();
+		strValue = currentNode->value();
+		texture.wrapT = strValue;
+
+		textures.push_back(texture);
+
+	}
+
+	resourceManager->models = models;
+	resourceManager->shaders = shaders;
+	resourceManager->textures = textures;
+
+}
+
+void LoadScene()
+{
+	Vector3 bgColor;
+	vector<CameraScene> cameras;
+	vector<ObjectScene> objects;
+	int activeCamera;
+
+	sceneManager = SceneManager::getInstance();
+
+	using namespace rapidxml;
+	xml_document<> doc;
+	ifstream file("../Resources/sceneManager.xml");
+	stringstream buffer;
+	buffer << file.rdbuf();
+	file.close();
+	string content(buffer.str());
+	doc.parse<0>(&content[0]);
+
+	xml_node<> *pRoot = doc.first_node();
+
+	xml_node<> *pNode = pRoot->first_node("backgroundColor")->first_node();
+	bgColor.x = atof(pNode->value());
+
+	pNode = pNode->next_sibling();
+	bgColor.y = atof(pNode->value());
+
+	pNode = pNode->next_sibling();
+	bgColor.z = atof(pNode->value());
+
+	for (xml_node<> *pNode = pRoot->first_node("cameras")->first_node("camera"); pNode; pNode = pNode->next_sibling("camera"))
+	{
+		CameraScene camera;
+
+		xml_attribute<> *pAttr = pNode->first_attribute();
+		camera.id = atoi(pAttr->value());
+
+		xml_node<> *currentNode = pNode->first_node();
+		xml_node<> *currentNodeVector = currentNode->first_node();
+		camera.position.x = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		camera.position.y = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		camera.position.z = atof(currentNodeVector->value());
+
+		currentNode = currentNode->next_sibling();
+		currentNodeVector = currentNode->first_node();
+		camera.target.x = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		camera.target.y = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		camera.target.z = atof(currentNodeVector->value());
+
+		currentNode = currentNode->next_sibling();
+		currentNodeVector = currentNode->first_node();
+		camera.up.x = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		camera.up.y = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		camera.up.z = atof(currentNodeVector->value());
+
+		currentNode = currentNode->next_sibling();
+		camera.translationSpeed = atof(currentNode->value());
+
+		currentNode = currentNode->next_sibling();
+		camera.rotationSpeed = atof(currentNode->value());
+
+		currentNode = currentNode->next_sibling();
+		camera.Fov = atof(currentNode->value());
+
+		currentNode = currentNode->next_sibling();
+		camera.Near = atof(currentNode->value());
+
+		currentNode = currentNode->next_sibling();
+		camera.Far = atof(currentNode->value());
+
+		cameras.push_back(camera);
+
+	}
+
+	for (xml_node<> *pNode = pRoot->first_node("objects")->first_node("object"); pNode; pNode = pNode->next_sibling("object"))
+	{
+		ObjectScene object;
+		vector<int> textureIds;
+
+		xml_attribute<> *pAttr = pNode->first_attribute();
+		object.id = atoi(pAttr->value());
+
+		xml_node<> *currentNode = pNode->first_node();
+		object.modelId = atoi(currentNode->value());
+
+		currentNode = currentNode->next_sibling();
+		object.shaderId = atoi(currentNode->value());
+
+		currentNode = currentNode->next_sibling();
+		object.type = currentNode->value();
+
+		currentNode = currentNode->next_sibling();
+		object.blend = currentNode->value();
+
+		currentNode = currentNode->next_sibling();
+		object.name = currentNode->value();
+
+		currentNode = currentNode->next_sibling();
+		for (xml_node<> *currentNodeVector = currentNode->first_node("texture"); currentNodeVector; currentNodeVector = currentNodeVector->next_sibling("texture"))
+		{
+			int textureId = atoi(currentNodeVector->first_attribute()->value());
+			textureIds.push_back(textureId);
+		}
+
+		object.textureIds = textureIds;
+
+		currentNode = currentNode->next_sibling();
+		xml_node<> *currentNodeVector = currentNode->first_node();
+		object.position.x = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		object.position.y = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		object.position.z = atof(currentNodeVector->value());
+
+		currentNode = currentNode->next_sibling();
+		currentNodeVector = currentNode->first_node();
+		object.rotation.x = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		object.rotation.y = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		object.rotation.z = atof(currentNodeVector->value());
+
+		currentNode = currentNode->next_sibling();
+		currentNodeVector = currentNode->first_node();
+		object.scale.x = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		object.scale.y = atof(currentNodeVector->value());
+
+		currentNodeVector = currentNodeVector->next_sibling();
+		object.scale.z = atof(currentNodeVector->value());
+
+		objects.push_back(object);
+
+	}
+
+	activeCamera = atoi(pRoot->first_node("activeCamera")->value());
+
+	sceneManager->bgColor = bgColor;
+	sceneManager->cameras = cameras;
+	sceneManager->objects = objects;
+	sceneManager->activeCamera = activeCamera;
+
+}
 
 int Init ( ESContext *esContext )
 {
-	
+	LoadResources();
+	LoadScene();
 
-	//getModel("C:\\Users\\Apetroaie Claudiu\\Desktop\\Gameloft\\First\\proiect_2015\\NewResourcesPacket\\Models\\Croco.nfg", &nrVertices, &nrIndices, pos, model);
+	cout << sceneManager->cameras[0].target.x;
+	cout << sceneManager->objects[0].textureIds[0];
+	cout << sceneManager->objects[0].scale.y;
+
 
 	Model model = Model("C:\\Users\\Apetroaie Claudiu\\Desktop\\Gameloft\\First\\proiect_2015\\NewResourcesPacket\\Models\\Croco.nfg");
 	nrIndices = model.nrIndices;
 	glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
 
-	//triangle data (heap)
 	Vertex2 verticesData[6];
-	/*Vertex2 vertices[1000];
-	int i;
-
-	for (i = 0; i < nrVertices; i++)
-	{
-		vertices[i].pos.x = pos[i][0];
-		vertices[i].pos.y = pos[i][1];
-		vertices[i].pos.z = pos[i][2];
-
-		vertices[i].color.x = 1.0f;
-		vertices[i].color.y = 0.0f;
-		vertices[i].color.z = 0.0f;
-	}
-
-	i = 0;
-
-	while (i<nrIndices/3)
-	{
-		model1[3 * i] = model[i][0];
-		model1[3 * i + 1] = model[i][1];
-		model1[3 * i + 2] = model[i][2];
-
-
-		i++;
-	}*/
-	/*
-	verticesData[0].pos.x = -0.5f;  verticesData[0].pos.y = 0.5f;  verticesData[0].pos.z = 0.0f;
-	verticesData[1].pos.x = -0.5f;  verticesData[1].pos.y = -0.5f;  verticesData[1].pos.z = 0.0f;
-	verticesData[2].pos.x = 0.5f;  verticesData[2].pos.y = -0.5f;  verticesData[2].pos.z = 0.0f;
-	verticesData[3].pos.x = -0.5f;  verticesData[3].pos.y = 0.5f;  verticesData[3].pos.z = 0.0f;
-	verticesData[4].pos.x = 0.5f;  verticesData[4].pos.y = 0.5f;  verticesData[4].pos.z = 0.0f;
-	verticesData[5].pos.x = 0.5f;  verticesData[5].pos.y = -0.5f;  verticesData[5].pos.z = 0.0f;
-	*/
-	//verticesData[6].pos.x = -0.5f;  verticesData[6].pos.y = 0.5f;  verticesData[6].pos.z = -0.5f;
-	//verticesData[7].pos.x = -0.5f;  verticesData[7].pos.y = -0.5f;  verticesData[7].pos.z = -0.5f;
-	//verticesData[8].pos.x = 0.5f;  verticesData[8].pos.y = -0.5f;  verticesData[8].pos.z = -0.5f;
-	//verticesData[9].pos.x = -0.5f;  verticesData[9].pos.y = 0.5f;  verticesData[9].pos.z = -0.5f;
-	//verticesData[10].pos.x = 0.5f;  verticesData[10].pos.y = 0.5f;  verticesData[10].pos.z = -0.5f;
-	//verticesData[11].pos.x = 0.5f;  verticesData[11].pos.y = -0.5f;  verticesData[11].pos.z = -0.5f;
-
-	//verticesData[12].pos.x = -0.5f;  verticesData[12].pos.y = 0.5f;  verticesData[12].pos.z = 0.0f;
-	//verticesData[13].pos.x = -0.5f;  verticesData[13].pos.y = -0.5f;  verticesData[13].pos.z = 0.0f;
-	//verticesData[14].pos.x = 0.5f;  verticesData[14].pos.y = -0.5f;  verticesData[14].pos.z = 0.0f;
-	//verticesData[15].pos.x = -0.5f;  verticesData[15].pos.y = 0.5f;  verticesData[15].pos.z = 0.0f;
-	//verticesData[16].pos.x = 0.5f;  verticesData[16].pos.y = 0.5f;  verticesData[16].pos.z = 0.0f;
-	//verticesData[17].pos.x = 0.5f;  verticesData[17].pos.y = -0.5f;  verticesData[17].pos.z = 0.0f;
-
-	//verticesData[6].pos.x = -0.5f;  verticesData[6].pos.y = 0.5f;  verticesData[6].pos.z = -0.5f;
-	//verticesData[7].pos.x = -0.5f;  verticesData[7].pos.y = -0.5f;  verticesData[7].pos.z = -0.5f;
-	//verticesData[8].pos.x = 0.5f;  verticesData[8].pos.y = -0.5f;  verticesData[8].pos.z = -0.5f;
-	//verticesData[9].pos.x = -0.5f;  verticesData[9].pos.y = 0.5f;  verticesData[9].pos.z = -0.5f;
-	//verticesData[10].pos.x = 0.5f;  verticesData[10].pos.y = 0.5f;  verticesData[10].pos.z = -0.5f;
-	//verticesData[11].pos.x = 0.5f;  verticesData[11].pos.y = -0.5f;  verticesData[11].pos.z = -0.5f;
-
-	/*/verticesData[0].color.x = 1.0f;  verticesData[0].color.y = 0.0f;  verticesData[0].color.z = 0.0f;
-	/verticesData[1].color.x = 0.0f;  verticesData[1].color.y = 1.0f;  verticesData[1].color.z = 0.0f;
-	verticesData[2].color.x = 0.0f;  verticesData[2].color.y = 0.0f;  verticesData[2].color.z = 1.0f;
-	verticesData[3].color.x = 1.0f;  verticesData[3].color.y = 0.0f;  verticesData[3].color.z = 0.0f;
-	verticesData[4].color.x = 0.0f;  verticesData[4].color.y = 1.0f;  verticesData[4].color.z = 0.0f;
-	verticesData[5].color.x = 0.0f;  verticesData[5].color.y = 0.0f;  verticesData[5].color.z = 1.0f;
-	*/
-	//verticesData[6].color.x = 1.0f;  verticesData[6].color.y = 0.0f;  verticesData[6].color.z = 0.0f;
-	//verticesData[7].color.x = 0.0f;  verticesData[7].color.y = 1.0f;  verticesData[7].color.z = 0.0f;
-	//verticesData[8].color.x = 0.0f;  verticesData[8].color.y = 0.0f;  verticesData[8].color.z = 1.0f;
-	//verticesData[9].color.x = 1.0f;  verticesData[9].color.y = 0.0f;  verticesData[9].color.z = 0.0f;
-	//verticesData[10].color.x = 0.0f;  verticesData[10].color.y = 1.0f;  verticesData[10].color.z = 0.0f;
-	//verticesData[11].color.x = 0.0f;  verticesData[11].color.y = 0.0f;  verticesData[11].color.z = 1.0f;
-
-	//buffer object
-	//glGenBuffers(1, &vboId);
-	//glBindBuffer(GL_ARRAY_BUFFER, vboId);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData, GL_STATIC_DRAW);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	
 	glGenBuffers(1, &verticesId);
 	glBindBuffer(GL_ARRAY_BUFFER, verticesId);
 	glBufferData(GL_ARRAY_BUFFER, model.nrVertices * sizeof(Vertex), &model.vertices[0], GL_STATIC_DRAW);
@@ -326,6 +511,48 @@ int _tmain(int argc, _TCHAR* argv[])
 	esRegisterKeyFunc ( &esContext, Key);
 
 	esMainLoop ( &esContext );
+
+	/*
+	using namespace rapidxml;
+	xml_document<> doc;
+	ifstream file("../exemplu_xml.xml");
+	stringstream buffer;
+	buffer << file.rdbuf();
+	file.close();
+	string content(buffer.str());
+	doc.parse<0>(&content[0]);
+
+	xml_node<> *pRoot = doc.first_node();
+	cout << pRoot->name() << "\n";
+
+	for (xml_node<> *pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling())
+	{
+		cout << pNode->name() << " ";
+
+		xml_attribute<> *pAttr = pNode->first_attribute();
+		string strValue = pAttr->value();
+		cout << strValue << ' ';
+		pAttr = pAttr->next_attribute();
+		cout << pAttr->value() << "\n";
+
+		for (xml_node<> *pNodeSon = pNode->first_node(); pNodeSon; pNodeSon = pNodeSon->next_sibling())
+		{
+			cout << pNodeSon->name() << "\n";
+
+			pAttr = pNodeSon->first_attribute();
+			string strValue = pAttr->value();
+			cout << strValue << "\n";
+			cout << pNodeSon->value()<< "\n";
+		}
+
+
+
+	}*/
+
+
+
+
+
 
 	//releasing OpenGL resources
 	CleanUp();

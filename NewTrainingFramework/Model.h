@@ -11,9 +11,9 @@ class Model
 public:
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
-	int nrVertices, nrIndices;
-	void loadNFG(const char* location);
-	Model(const char* location);
+	int nrVertices, nrIndices, id;
+	void loadNFG(string location);
+	Model(string location);
 	~Model();
 };
 
