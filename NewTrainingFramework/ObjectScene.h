@@ -9,10 +9,11 @@ using namespace std;
 class ObjectScene
 {
 public:
-	int id, modelId, shaderId;
+	GLint id, modelId, shaderId;
 	string type, blend, name;
 	vector<int> textureIds;
-	Vector3 position, rotation, scale;
+	Vector3 colors, position, rotation, scale;
+	bool depthTest;
 
 	ObjectScene();
 	~ObjectScene();

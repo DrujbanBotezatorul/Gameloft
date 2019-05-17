@@ -6,7 +6,7 @@ using namespace std;
 class ShaderResources
 {
 public:
-	int id;
+	GLuint id;
 	string fileVS;
 	string fileFS;
 

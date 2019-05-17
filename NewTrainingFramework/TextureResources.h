@@ -7,7 +7,7 @@ class TextureResources
 {
 	
 public:
-	int id;
+	GLint id;
 	string type;
 	string path;
 	string minFilter, magFilter;

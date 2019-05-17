@@ -158,7 +158,7 @@ void LoadScene()
 		xml_attribute<> *pAttr = pNode->first_attribute();
 		camera.id = atoi(pAttr->value());
 
-		xml_node<> *currentNode = pNode->first_node();
+		xml_node<> *currentNode = pNode->first_node("position");
 		xml_node<> *currentNodeVector = currentNode->first_node();
 		camera.position.x = atof(currentNodeVector->value());
 
@@ -168,7 +168,7 @@ void LoadScene()
 		currentNodeVector = currentNodeVector->next_sibling();
 		camera.position.z = atof(currentNodeVector->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("target");
 		currentNodeVector = currentNode->first_node();
 		camera.target.x = atof(currentNodeVector->value());
 
@@ -178,7 +178,7 @@ void LoadScene()
 		currentNodeVector = currentNodeVector->next_sibling();
 		camera.target.z = atof(currentNodeVector->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("up");
 		currentNodeVector = currentNode->first_node();
 		camera.up.x = atof(currentNodeVector->value());
 
@@ -188,19 +188,19 @@ void LoadScene()
 		currentNodeVector = currentNodeVector->next_sibling();
 		camera.up.z = atof(currentNodeVector->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("translationSpeed");
 		camera.translationSpeed = atof(currentNode->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("rotationSpeed");
 		camera.rotationSpeed = atof(currentNode->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("fov");
 		camera.Fov = atof(currentNode->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("near");
 		camera.Near = atof(currentNode->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("far");
 		camera.Far = atof(currentNode->value());
 
 		cameras.push_back(camera);
@@ -215,22 +215,41 @@ void LoadScene()
 		xml_attribute<> *pAttr = pNode->first_attribute();
 		object.id = atoi(pAttr->value());
 
-		xml_node<> *currentNode = pNode->first_node();
+		xml_node<> *currentNode = pNode->first_node("model");
 		object.modelId = atoi(currentNode->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("shader");
 		object.shaderId = atoi(currentNode->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("type");
 		object.type = currentNode->value();
 
-		currentNode = currentNode->next_sibling();
+		if (pNode->first_node("wired/"))
+		{
+
+		}
+
+		currentNode = pNode->first_node("blend");
 		object.blend = currentNode->value();
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("name");
 		object.name = currentNode->value();
 
-		currentNode = currentNode->next_sibling();
+		if (pNode->first_node("color"))
+		{
+			currentNode = pNode->first_node("color");
+			xml_node<> *currentNodeVector = currentNode->first_node();
+			object.colors.x = atof(currentNodeVector->value());
+
+			currentNodeVector = currentNodeVector->next_sibling();
+			object.colors.y = atof(currentNodeVector->value());
+
+			currentNodeVector = currentNodeVector->next_sibling();
+			object.colors.z = atof(currentNodeVector->value());
+
+		}
+
+		currentNode = pNode->first_node("textures");
 		for (xml_node<> *currentNodeVector = currentNode->first_node("texture"); currentNodeVector; currentNodeVector = currentNodeVector->next_sibling("texture"))
 		{
 			int textureId = atoi(currentNodeVector->first_attribute()->value());
@@ -239,7 +258,7 @@ void LoadScene()
 
 		object.textureIds = textureIds;
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("position");
 		xml_node<> *currentNodeVector = currentNode->first_node();
 		object.position.x = atof(currentNodeVector->value());
 
@@ -249,7 +268,7 @@ void LoadScene()
 		currentNodeVector = currentNodeVector->next_sibling();
 		object.position.z = atof(currentNodeVector->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("rotation");
 		currentNodeVector = currentNode->first_node();
 		object.rotation.x = atof(currentNodeVector->value());
 
@@ -259,7 +278,7 @@ void LoadScene()
 		currentNodeVector = currentNodeVector->next_sibling();
 		object.rotation.z = atof(currentNodeVector->value());
 
-		currentNode = currentNode->next_sibling();
+		currentNode = pNode->first_node("scale");
 		currentNodeVector = currentNode->first_node();
 		object.scale.x = atof(currentNodeVector->value());
 
@@ -284,15 +303,21 @@ void LoadScene()
 
 int Init ( ESContext *esContext )
 {
-	LoadResources();
-	LoadScene();
+	//LoadResources();
+	//LoadScene();
 
-	cout << sceneManager->cameras[0].target.x;
-	cout << sceneManager->objects[0].textureIds[0];
-	cout << sceneManager->objects[0].scale.y;
+	//cout << sceneManager->cameras[0].target.x;
+	//cout << sceneManager->objects[0].textureIds[0];
+	//cout << sceneManager->objects[0].scale.y;
+
+	resourceManager = ResourceManager::getInstance();
+	resourceManager->Init();
+
+	sceneManager = SceneManager::getInstance();
+	sceneManager->Init();
 
 
-	Model model = Model("C:\\Users\\Apetroaie Claudiu\\Desktop\\Gameloft\\First\\proiect_2015\\NewResourcesPacket\\Models\\Croco.nfg");
+	Model model = Model("../Resources/Models/Croco.nfg");
 	nrIndices = model.nrIndices;
 	glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
 
@@ -316,7 +341,7 @@ int Init ( ESContext *esContext )
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glEnable(GL_DEPTH_TEST);
 
-	arrayPixel = LoadTGA("D:\\Projects\\Gameloft\\Resources\\Textures\\Croco.tga", &width, &height, &bpp);
+	arrayPixel = LoadTGA("../Resources/Textures/Croco.tga", &width, &height, &bpp);
 
 	if (bpp == 24)
 	{

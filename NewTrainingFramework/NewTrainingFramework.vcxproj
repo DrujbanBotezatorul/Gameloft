@@ -166,11 +166,13 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraScene.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="ModelResources.cpp" />
     <ClCompile Include="NewTrainingFramework.cpp" />
     <ClCompile Include="ObjectScene.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="ShaderResources.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -180,6 +182,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Nvidia|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TextureResources.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -187,15 +190,18 @@
     <ClInclude Include="CameraScene.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelManager.h" />
     <ClInclude Include="ModelResources.h" />
     <ClInclude Include="ObjectScene.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="ShaderResources.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TextureResources.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>

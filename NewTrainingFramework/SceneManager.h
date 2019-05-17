@@ -1,7 +1,10 @@
 #pragma once
-#include <vector>
+#include "../rapidxml-1.13/rapidxml_utils.hpp"
 #include "CameraScene.h"
 #include "ObjectScene.h"
+#include <vector>
+#include <string>
+#include <sstream>
 
 class SceneManager
 {

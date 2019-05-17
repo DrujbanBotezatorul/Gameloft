@@ -1,12 +1,13 @@
 #pragma once
 #include <string>
+#include "../Utilities/utilities.h"
 
 using namespace std;
 
 class ModelResources
 {
 public:
-	int id;
+	GLint id;
 	string path;
 
 	ModelResources();
