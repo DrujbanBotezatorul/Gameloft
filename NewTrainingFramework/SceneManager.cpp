@@ -189,4 +189,23 @@ void SceneManager::Init()
 	}
 
 	activeCamera = atoi(pRoot->first_node("activeCamera")->value());
+
+}
+
+void SceneManager::Draw(ESContext *esContext)
+{
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	for (std::vector<ObjectScene>::iterator it = objects.begin(); it != objects.end(); ++it)
+	{
+		it->Draw();
+	}
+
+
+	//eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
+}
+
+void SceneManager::Update()
+{
+
 }

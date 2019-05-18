@@ -316,8 +316,18 @@ int Init ( ESContext *esContext )
 	sceneManager = SceneManager::getInstance();
 	sceneManager->Init();
 
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	Model model = Model("../Resources/Models/Croco.nfg");
+	for (std::vector<ObjectScene>::iterator it = sceneManager->objects.begin(); it != sceneManager->objects.end(); ++it)
+	{
+		it->model = resourceManager->LoadModel(it->modelId);
+		it->texture = resourceManager->LoadTexture(it->textureIds[0]);
+		it->shader = resourceManager->LoadShader(it->shaderId);
+	}
+
+
+
+	/*Model model = Model("../Resources/Models/Croco.nfg");
 	nrIndices = model.nrIndices;
 	glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
 
@@ -354,7 +364,7 @@ int Init ( ESContext *esContext )
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	//creation of shaders and program 
+	//creation of shaders and program */
 	return myShaders.Init("../Resources/Shaders/ModelShaderVS.vs", "../Resources/Shaders/ModelShaderFS.fs");
 
 }
@@ -362,6 +372,20 @@ int Init ( ESContext *esContext )
 void Draw ( ESContext *esContext )
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glUseProgram(myShaders.program);
+
+	sceneManager->Draw(esContext);
+
+	Matrix mr;
+	mr = camera.getViewMatrix() * camera.getPerspectiveMatrix();
+
+	if (myShaders.matrixUniform != -1)
+	{
+		glUniformMatrix4fv(myShaders.matrixUniform, 1, GL_FALSE, (GLfloat*)mr.m);
+	}
+
+	/*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(myShaders.program);
 
@@ -411,7 +435,8 @@ void Draw ( ESContext *esContext )
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
+	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );*/
+	eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
 }
 
 void Update ( ESContext *esContext, float deltaTime )

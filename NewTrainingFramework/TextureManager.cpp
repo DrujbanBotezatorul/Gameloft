@@ -16,6 +16,8 @@ void TextureManager::Load()
 	int width, height, bpp;
 	char* arrayPixel;
 
+	tr->path = "../Resources/" + tr->path;
+	//tr->path = "D:\\Projects\\Gameloft\\Resources\\Textures\\Croco.tga";
 	const char *path = tr->path.c_str();
 
 	glGenTextures(1, &textureId);

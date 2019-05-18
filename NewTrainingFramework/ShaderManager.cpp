@@ -13,14 +13,11 @@ ShaderManager::~ShaderManager()
 
 int ShaderManager::Load()
 {
-	GLuint program, vertexShader, fragmentShader;
+	sr->fileVS = "D:\\Projects\\Gameloft\\Resources\\Shaders\\ModelShaderVS.vs";
+	sr->fileFS = "D:\\Projects\\Gameloft\\Resources\\Shaders\\ModelShaderFS.fs";
+
 	const char *fileVS = sr->fileVS.c_str();
 	const char *fileFS = sr->fileFS.c_str();
-	GLint positionAttribute;
-	GLint colorAttribute;
-	GLint uvAttribute;
-	GLint matrixUniform;
-	GLint textureUniform;
 
 	vertexShader = esLoadShader(GL_VERTEX_SHADER, (char*)fileVS);
 

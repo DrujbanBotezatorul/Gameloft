@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "../Utilities/utilities.h"
 
 using namespace std;
 

@@ -7,6 +7,12 @@ class ShaderManager
 public:
 	ShaderResources* sr;
 	GLint shaderId;
+	GLuint program, vertexShader, fragmentShader;
+	GLint positionAttribute;
+	GLint colorAttribute;
+	GLint uvAttribute;
+	GLint matrixUniform;
+	GLint textureUniform;
 
 	int Load();
 

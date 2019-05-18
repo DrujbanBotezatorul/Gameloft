@@ -103,3 +103,90 @@ void ResourceManager::Init()
 	}
 
 }
+
+ModelManager* ResourceManager::LoadModel(int id)
+{
+	int i;
+
+	for (i = 0; i < loadedModels.size(); i++)
+	{
+		if (loadedModels[i]->mr->id == id)
+		{
+			return loadedModels[i];
+		}
+	}
+
+	ModelManager* model = (ModelManager*)malloc(sizeof(ModelManager));
+
+	for (i = 0; i < models.size(); i++)
+	{
+		if (id == models[i].id)
+		{
+			model->mr = &models[i];
+			model->Load();
+			loadedModels.push_back(model);
+
+			return model;
+		}
+	}
+
+	return NULL;
+}
+
+TextureManager* ResourceManager::LoadTexture(int id)
+{
+	int i;
+
+	for (i = 0; i < loadedTextures.size(); i++)
+	{
+		if (loadedTextures[i]->tr->id == id)
+		{
+			return loadedTextures[i];
+		}
+	}
+
+	TextureManager* texture = (TextureManager*)malloc(sizeof(TextureManager));
+
+	for (i = 0; i < textures.size(); i++)
+	{
+		if (id == textures[i].id)
+		{
+			texture->tr = &textures[i];
+			texture->Load();
+			loadedTextures.push_back(texture);
+
+			return texture;
+		}
+	}
+
+	return NULL;
+}
+
+ShaderManager* ResourceManager::LoadShader(int id)
+{
+	int i;
+
+	for (i = 0; i < loadedShaders.size(); i++)
+	{
+		if (loadedShaders[i]->sr->id == id)
+		{
+			return loadedShaders[i];
+		}
+	}
+
+	ShaderManager* shader = (ShaderManager*)malloc(sizeof(ShaderManager));
+
+	for (i = 0; i < shaders.size(); i++)
+	{
+		if (id == shaders[i].id)
+		{
+			shader->sr = &shaders[i];
+			shader->Load();
+			loadedShaders.push_back(shader);
+
+			return shader;
+		}
+	}
+
+	return NULL;
+}

@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "ModelManager.h"
+#include "TextureManager.h"
+#include "ShaderManager.h"
 #include "../Utilities/utilities.h"
 
 
@@ -13,7 +16,12 @@ public:
 	string type, blend, name;
 	vector<int> textureIds;
 	Vector3 colors, position, rotation, scale;
+	ModelManager* model;
+	TextureManager* texture;
+	ShaderManager* shader;
 	bool depthTest;
+
+	void Draw();
 
 	ObjectScene();
 	~ObjectScene();

@@ -83,40 +83,47 @@
 				<light>1</light>
 			</lights>
 		</object>
-		
-		
-		<object id="8">
-			<model>generated</model>
-			<shader>8</shader>
-			<type>terrain</type>
-			<wired/>
-			<blend>false</blend>
-			<name>Teren</name>
-			<color>
-				<r>1.0</r>
-				<g>1.0</g>
-				<b>1.0</b>
-			</color>
+		<object id="2">
+			<model>5</model><!-- id model -->
+			<shader>10</shader><!-- id shader -->
+			<type>normal</type>
+			<blend>true</blend>
+			<name>Crocodil_verde</name><!-- optional -->
 			<textures>
-				<texture id="14"/>
-				<texture id="15"/>
-				<!--adaugati texturile-->
+				<texture id="5"/>
 			</textures>
-			<position>
-				<x>1.5</x>
-				<y>2.4</y>
-				<z>7</z>
+			<position><!-- translatia -->
+				<x>20.5</x>
+				<y>27</y>
+				<z>21.22</z>
 			</position>
 			<rotation>
-				<x>0.0</x>
-				<y>0.0</y>
-				<z>0.0</z>
+				<x>0.5</x>
+				<y>1.4</y>
+				<z>1</z>
 			</rotation>
 			<scale>
 				<x>1.0</x>
 				<y>1.0</y>
 				<z>1.0</z>
 			</scale>
+			<followingCamera>
+				<cameras>
+					<camera>1</camera>
+				</cameras>
+				<ox/>
+				<oy/>
+				<oz/>
+			</followingCamera>
+			<trajectory type="linear" iteration="infinite" direction="alternate">
+			<!-- startPoint e chiar Pos -->
+				<endPoint>
+					<x>0.5</x>
+					<y>100.0</y>
+					<z>1.0</z>				
+				</endPoint>
+				<speed>0.1</speed>
+			</trajectory>
 			<lights>
 				<light>1</light>
 			</lights>

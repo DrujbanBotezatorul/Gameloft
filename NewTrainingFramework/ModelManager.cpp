@@ -13,6 +13,8 @@ ModelManager::~ModelManager()
 
 void ModelManager::Load()
 {
+	mr->path = "../Resources/" + mr->path;
+	//mr->path = "D:\\Projects\\Gameloft\\Resources\\Models\\Croco.nfg";
 	ifstream modelFile(mr->path);
 
 	vector<Vertex> vertices;
