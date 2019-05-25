@@ -21,7 +21,7 @@ public:
 
 
 	void Init();//initializari - pot fi si in constructor
-	void Draw(ESContext*);
+	void Draw(ESContext*, Matrix);
 	void Update();
 	static SceneManager* getInstance();
 	void metodaInstanta();//o metoda oarecare, nestatica

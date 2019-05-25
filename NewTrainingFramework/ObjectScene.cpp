@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ObjectScene.h"
 
-
 ObjectScene::ObjectScene()
 {
 }
@@ -11,7 +10,7 @@ ObjectScene::~ObjectScene()
 {
 }
 
-void ObjectScene::Draw()
+void ObjectScene::Draw(Matrix mr)
 {
 	glUseProgram(shader->program);
 
@@ -36,6 +35,21 @@ void ObjectScene::Draw()
 		glUniform1i(shader->textureUniform, 0);
 	}
 
+	Matrix placement, rotX, rotY, rotZ, scaleMatrix, transMatrix;
+
+	rotX.SetRotationX(rotation.x);
+	rotY.SetRotationY(rotation.y);
+	rotZ.SetRotationZ(rotation.z);
+	transMatrix.SetTranslation(position.x, position.y, position.z);
+	scaleMatrix.SetScale(scale.x, scale.y, scale.z);
+
+	placement = scaleMatrix * rotX * rotY * rotZ * transMatrix * mr;
+
+	if (shader->matrixUniform != -1)
+	{
+		glUniformMatrix4fv(shader->matrixUniform, 1, GL_FALSE, (GLfloat*)placement.m);
+	}
+	
 	glDrawElements(GL_TRIANGLES, model->nrIndices, GL_UNSIGNED_INT, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

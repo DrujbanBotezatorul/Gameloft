@@ -53,8 +53,8 @@
 				<z>21.22</z>
 			</position>
 			<rotation>
-				<x>0.5</x>
-				<y>1.4</y>
+				<x>90</x>
+				<y>90</y>
 				<z>1</z>
 			</rotation>
 			<scale>
@@ -93,9 +93,9 @@
 				<texture id="5"/>
 			</textures>
 			<position><!-- translatia -->
-				<x>20.5</x>
-				<y>27</y>
-				<z>21.22</z>
+				<x>1000</x>
+				<y>0</y>
+				<z>0</z>
 			</position>
 			<rotation>
 				<x>0.5</x>

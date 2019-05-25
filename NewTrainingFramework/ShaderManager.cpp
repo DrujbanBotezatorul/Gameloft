@@ -13,8 +13,8 @@ ShaderManager::~ShaderManager()
 
 int ShaderManager::Load()
 {
-	sr->fileVS = "D:\\Projects\\Gameloft\\Resources\\Shaders\\ModelShaderVS.vs";
-	sr->fileFS = "D:\\Projects\\Gameloft\\Resources\\Shaders\\ModelShaderFS.fs";
+	sr->fileVS = "../Resources/" + sr->fileVS;
+	sr->fileFS = "../Resources/" + sr->fileFS;
 
 	const char *fileVS = sr->fileVS.c_str();
 	const char *fileFS = sr->fileFS.c_str();

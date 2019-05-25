@@ -375,10 +375,12 @@ void Draw ( ESContext *esContext )
 
 	glUseProgram(myShaders.program);
 
-	sceneManager->Draw(esContext);
 
 	Matrix mr;
 	mr = camera.getViewMatrix() * camera.getPerspectiveMatrix();
+
+	sceneManager->Draw(esContext, mr);
+
 
 	if (myShaders.matrixUniform != -1)
 	{
