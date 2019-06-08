@@ -324,6 +324,14 @@ int Init ( ESContext *esContext )
 		it->texture = resourceManager->LoadTexture(it->textureIds[0]);
 		it->shader = resourceManager->LoadShader(it->shaderId);
 	}
+	for (std::vector<Terrain>::iterator it = sceneManager->terrains.begin(); it != sceneManager->terrains.end(); ++it)
+	{
+		Vector3 nullVector;
+		nullVector.x = 0; nullVector.y = 0; nullVector.z = 0;
+		it->CreateModel(camera.getPosition());
+		it->texture = resourceManager->LoadTexture(it->textureIds[0]);
+		it->shader = resourceManager->LoadShader(it->shaderId);
+	}
 
 
 
@@ -379,7 +387,7 @@ void Draw ( ESContext *esContext )
 	Matrix mr;
 	mr = camera.getViewMatrix() * camera.getPerspectiveMatrix();
 
-	sceneManager->Draw(esContext, mr);
+	sceneManager->Draw(esContext, mr, camera.getPosition());
 
 
 	if (myShaders.matrixUniform != -1)

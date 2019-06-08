@@ -2,6 +2,7 @@
 #include "../rapidxml-1.13/rapidxml_utils.hpp"
 #include "CameraScene.h"
 #include "ObjectScene.h"
+#include "Terrain.h"
 #include <vector>
 #include <string>
 #include <sstream>
@@ -17,11 +18,12 @@ public:
 	Vector3 bgColor;
 	vector<CameraScene> cameras;
 	vector<ObjectScene> objects;
+	vector<Terrain> terrains;
 	int activeCamera;
 
 
 	void Init();//initializari - pot fi si in constructor
-	void Draw(ESContext*, Matrix);
+	void Draw(ESContext*, Matrix, Vector3);
 	void Update();
 	static SceneManager* getInstance();
 	void metodaInstanta();//o metoda oarecare, nestatica

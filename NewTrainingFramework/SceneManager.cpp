@@ -25,6 +25,20 @@ void SceneManager::metodaInstanta() {
 	//nitel cod
 }
 
+void passValues(ObjectScene* target, ObjectScene object)
+{
+	target->id = object.id;
+	target->modelId = object.modelId;
+	target->shaderId = object.shaderId;
+	target->type = object.type;
+	target->blend = object.blend;
+	target->name = object.name;
+	target->textureIds = object.textureIds;
+	target->position = object.position;
+	target->rotation = object.rotation;
+	target->scale = object.scale;
+}
+
 void SceneManager::Init()
 {
 	using namespace rapidxml;
@@ -184,7 +198,28 @@ void SceneManager::Init()
 		currentNodeVector = currentNodeVector->next_sibling();
 		object.scale.z = atof(currentNodeVector->value());
 
-		objects.push_back(object);
+
+		if (object.type == "terrain")
+		{
+			Terrain terrain;
+
+			currentNode = pNode->first_node("number");
+			terrain.nrCells = atoi(currentNode->value());
+
+			currentNode = pNode->first_node("dimension");
+			terrain.dimCells = atof(currentNode->value());
+
+			currentNode = pNode->first_node("offset");
+			terrain.offsetY = atof(currentNode->value());
+
+			passValues(&terrain, object);
+
+			terrains.push_back(terrain);
+		}
+		else
+		{
+			objects.push_back(object);
+		}
 
 	}
 
@@ -192,11 +227,15 @@ void SceneManager::Init()
 
 }
 
-void SceneManager::Draw(ESContext *esContext, Matrix mr)
+void SceneManager::Draw(ESContext *esContext, Matrix mr, Vector3 position)
 {
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (std::vector<ObjectScene>::iterator it = objects.begin(); it != objects.end(); ++it)
+	{
+		it->Draw(mr);
+	}
+	for (std::vector<Terrain>::iterator it = terrains.begin(); it != terrains.end(); ++it)
 	{
 		it->Draw(mr);
 	}

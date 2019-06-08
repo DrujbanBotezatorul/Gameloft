@@ -13,8 +13,8 @@ ShaderManager::~ShaderManager()
 
 int ShaderManager::Load()
 {
-	sr->fileVS = "../Resources/" + sr->fileVS;
-	sr->fileFS = "../Resources/" + sr->fileFS;
+	sr->fileVS = "../" + sr->fileVS;
+	sr->fileFS = "../" + sr->fileFS;
 
 	const char *fileVS = sr->fileVS.c_str();
 	const char *fileFS = sr->fileFS.c_str();
