@@ -25,7 +25,7 @@ void SceneManager::metodaInstanta() {
 	//nitel cod
 }
 
-void passValues(ObjectScene* target, ObjectScene object)
+void passValues(Terrain* target, ObjectScene object)
 {
 	target->id = object.id;
 	target->modelId = object.modelId;
@@ -119,20 +119,53 @@ void SceneManager::Init()
 
 	for (xml_node<> *pNode = pRoot->first_node("objects")->first_node("object"); pNode; pNode = pNode->next_sibling("object"))
 	{
-		ObjectScene object;
+		//ObjectScene* object = new ObjectScene();
+		ObjectScene* object;
 		vector<int> textureIds;
 
 		xml_attribute<> *pAttr = pNode->first_attribute();
-		object.id = atoi(pAttr->value());
 
-		xml_node<> *currentNode = pNode->first_node("model");
-		object.modelId = atoi(currentNode->value());
+		xml_node<> *currentNode = pNode->first_node("type");
+		string type = currentNode->value();
+
+		if (type == "terrain")
+		{
+			Terrain* terrain = new Terrain();
+
+			terrain->id = atoi(pAttr->value());
+
+			currentNode = pNode->first_node("number");
+			terrain->nrCells = atoi(currentNode->value());
+
+			currentNode = pNode->first_node("dimension");
+			terrain->dimCells = atof(currentNode->value());
+
+			currentNode = pNode->first_node("offset");
+			terrain->offsetY = atof(currentNode->value());
+
+			objects.insert(pair<int, Terrain*>(terrain->id, terrain));
+
+			object = (ObjectScene*)terrain;
+
+		}
+		else if (type == "normal")
+		{
+			object = new ObjectScene();
+			object->id = atoi(pAttr->value());
+			objects.insert(pair<int, ObjectScene*>(object->id, object));
+
+		}
+
+		object->type = type;
+
+
+		currentNode = pNode->first_node("model");
+		object->modelId = atoi(currentNode->value());
 
 		currentNode = pNode->first_node("shader");
-		object.shaderId = atoi(currentNode->value());
+		object->shaderId = atoi(currentNode->value());
 
-		currentNode = pNode->first_node("type");
-		object.type = currentNode->value();
+		
 
 		if (pNode->first_node("wired/"))
 		{
@@ -140,22 +173,22 @@ void SceneManager::Init()
 		}
 
 		currentNode = pNode->first_node("blend");
-		object.blend = currentNode->value();
+		object->blend = currentNode->value();
 
 		currentNode = pNode->first_node("name");
-		object.name = currentNode->value();
+		object->name = currentNode->value();
 
 		if (pNode->first_node("color"))
 		{
 			currentNode = pNode->first_node("color");
 			xml_node<> *currentNodeVector = currentNode->first_node();
-			object.colors.x = atof(currentNodeVector->value());
+			object->colors.x = atof(currentNodeVector->value());
 
 			currentNodeVector = currentNodeVector->next_sibling();
-			object.colors.y = atof(currentNodeVector->value());
+			object->colors.y = atof(currentNodeVector->value());
 
 			currentNodeVector = currentNodeVector->next_sibling();
-			object.colors.z = atof(currentNodeVector->value());
+			object->colors.z = atof(currentNodeVector->value());
 
 		}
 
@@ -166,60 +199,61 @@ void SceneManager::Init()
 			textureIds.push_back(textureId);
 		}
 
-		object.textureIds = textureIds;
+		object->textureIds = textureIds;
 
 		currentNode = pNode->first_node("position");
 		xml_node<> *currentNodeVector = currentNode->first_node();
-		object.position.x = atof(currentNodeVector->value());
+		object->position.x = atof(currentNodeVector->value());
 
 		currentNodeVector = currentNodeVector->next_sibling();
-		object.position.y = atof(currentNodeVector->value());
+		object->position.y = atof(currentNodeVector->value());
 
 		currentNodeVector = currentNodeVector->next_sibling();
-		object.position.z = atof(currentNodeVector->value());
+		object->position.z = atof(currentNodeVector->value());
 
 		currentNode = pNode->first_node("rotation");
 		currentNodeVector = currentNode->first_node();
-		object.rotation.x = atof(currentNodeVector->value());
+		object->rotation.x = atof(currentNodeVector->value());
 
 		currentNodeVector = currentNodeVector->next_sibling();
-		object.rotation.y = atof(currentNodeVector->value());
+		object->rotation.y = atof(currentNodeVector->value());
 
 		currentNodeVector = currentNodeVector->next_sibling();
-		object.rotation.z = atof(currentNodeVector->value());
+		object->rotation.z = atof(currentNodeVector->value());
 
 		currentNode = pNode->first_node("scale");
 		currentNodeVector = currentNode->first_node();
-		object.scale.x = atof(currentNodeVector->value());
+		object->scale.x = atof(currentNodeVector->value());
 
 		currentNodeVector = currentNodeVector->next_sibling();
-		object.scale.y = atof(currentNodeVector->value());
+		object->scale.y = atof(currentNodeVector->value());
 
 		currentNodeVector = currentNodeVector->next_sibling();
-		object.scale.z = atof(currentNodeVector->value());
+		object->scale.z = atof(currentNodeVector->value());
 
-
-		if (object.type == "terrain")
+		
+		/*if (object->type == "terrain")
 		{
-			Terrain terrain;
+			Terrain* terrain = new Terrain();
+			terrain = (Terrain*)object;
 
 			currentNode = pNode->first_node("number");
-			terrain.nrCells = atoi(currentNode->value());
+			terrain->nrCells = atoi(currentNode->value());
 
 			currentNode = pNode->first_node("dimension");
-			terrain.dimCells = atof(currentNode->value());
+			terrain->dimCells = atof(currentNode->value());
 
 			currentNode = pNode->first_node("offset");
-			terrain.offsetY = atof(currentNode->value());
+			terrain->offsetY = atof(currentNode->value());
 
-			passValues(&terrain, object);
+			//passValues(terrain, object);
 
-			terrains.push_back(terrain);
+			objects.insert(pair<int, Terrain*>(terrain->id, terrain));
 		}
 		else
 		{
-			objects.push_back(object);
-		}
+			objects.insert(pair<int, ObjectScene*>(object->id, object));
+		}*/
 
 	}
 
@@ -230,15 +264,19 @@ void SceneManager::Init()
 void SceneManager::Draw(ESContext *esContext, Matrix mr, Vector3 position)
 {
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	for (std::vector<ObjectScene>::iterator it = objects.begin(); it != objects.end(); ++it)
+	/*
+	for (int i=0; i<objects.size(); i++)
+	{
+		ObjectScene* it = objects[i];
+		it->Draw(mr);
+	}*/
+	for (map<int, ObjectScene*>::iterator it = objects.begin(); it != objects.end(); it++) {
+		it->second->Draw(mr);
+	}
+	/*for (std::vector<Terrain>::iterator it = terrains.begin(); it != terrains.end(); ++it)
 	{
 		it->Draw(mr);
-	}
-	for (std::vector<Terrain>::iterator it = terrains.begin(); it != terrains.end(); ++it)
-	{
-		it->Draw(mr);
-	}
+	}*/
 
 
 	//eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);

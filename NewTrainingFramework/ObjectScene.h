@@ -21,6 +21,7 @@ public:
 	ShaderManager* shader;
 	bool depthTest;
 
+	void GenerateModel();
 	void Draw(Matrix);
 
 	ObjectScene();

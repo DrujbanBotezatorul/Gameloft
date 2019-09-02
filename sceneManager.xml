@@ -122,6 +122,47 @@
 			</lights>
 		</object>
 	</objects>
+	<object id="8">
+			<model>generated</model>
+			<shader>3</shader>
+			<type>terrain</type>
+			<wired/>
+			<blend>false</blend>
+			<name>Teren</name>
+			<color>
+				<r>1.0</r>
+				<g>1.0</g>
+				<b>1.0</b>
+			</color>
+			<textures>
+				<texture id="13"/>
+				<texture id="14"/>
+				<texture id="15"/>
+				<texture id="15"/>
+				<!--adaugati texturile-->
+			</textures>
+			<position>
+				<x>1.5</x>
+				<y>2.4</y>
+				<z>7</z>
+			</position>
+			<rotation>
+				<x>0.0</x>
+				<y>0.0</y>
+				<z>0.0</z>
+			</rotation>
+			<scale>
+				<x>1.0</x>
+				<y>1.0</y>
+				<z>1.0</z>
+			</scale>
+			<number>40</number>
+			<dimension>1000</dimension>
+			<offset>-200</offset>
+			<lights>
+				<light>1</light>
+			</lights>
+		</object>
 	
 
 	<ambientalLight>

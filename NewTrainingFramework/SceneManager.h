@@ -4,6 +4,7 @@
 #include "ObjectScene.h"
 #include "Terrain.h"
 #include <vector>
+#include <map>
 #include <string>
 #include <sstream>
 
@@ -17,7 +18,7 @@ public:
 
 	Vector3 bgColor;
 	vector<CameraScene> cameras;
-	vector<ObjectScene> objects;
+	map<int, ObjectScene*> objects;
 	vector<Terrain> terrains;
 	int activeCamera;
 

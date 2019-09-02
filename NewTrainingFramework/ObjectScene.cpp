@@ -10,6 +10,11 @@ ObjectScene::~ObjectScene()
 {
 }
 
+void ObjectScene::GenerateModel()
+{
+
+}
+
 void ObjectScene::Draw(Matrix mr)
 {
 	glUseProgram(shader->program);

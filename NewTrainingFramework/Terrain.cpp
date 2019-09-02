@@ -11,10 +11,10 @@ Terrain::~Terrain()
 {
 }
 
-void Terrain::CreateModel(Vector3 position)
+void Terrain::GenerateModel(Vector3 position)
 {
 	vector<Vertex> vertices;
-	vector<unsigned int> indices;
+	vector<unsigned short> indices;
 
 	Vector3 center, currentPos, pos, norm, binorm, tgt;
 	Vector2 uv;
@@ -37,7 +37,9 @@ void Terrain::CreateModel(Vector3 position)
 
 			pos.x = currentPos.x;
 			pos.z = currentPos.z;
-			vertices.push_back(Vertex(pos));
+			uv.x = i;
+			uv.y = j;
+			vertices.push_back(Vertex(pos, uv));
 
 			a[i][j] = k++;
 
@@ -48,9 +50,9 @@ void Terrain::CreateModel(Vector3 position)
 	{
 		for (int j = 0; j < nrCells; j++)
 		{
-			pos.x = currentPos.x;
+			/*pos.x = currentPos.x;
 			pos.z = currentPos.z;
-			vertices.push_back(Vertex(pos));
+			vertices.push_back(Vertex(pos));*/
 
 
 			indices.push_back(a[i][j]);
@@ -64,18 +66,18 @@ void Terrain::CreateModel(Vector3 position)
 		}
 	}
 
-	model = (ModelManager*)malloc(sizeof(ModelManager));
+	model = new ModelManager();
 	model->nrVertices = vertices.size();
 	model->nrIndices = indices.size();
 
 	glGenBuffers(1, &model->verticesId);
 	glBindBuffer(GL_ARRAY_BUFFER, model->verticesId);
-	glBufferData(GL_ARRAY_BUFFER, model->nrVertices * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, model->nrVertices * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &model->indicesId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->indicesId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->nrIndices * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->nrIndices * sizeof(unsigned short), indices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 /*

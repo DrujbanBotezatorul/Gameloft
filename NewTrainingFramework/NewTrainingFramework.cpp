@@ -34,6 +34,7 @@ float time;
 ResourceManager* resourceManager;
 SceneManager* sceneManager;
 
+/*
 void LoadResources()
 {
 	vector<ModelResources> models;
@@ -299,7 +300,7 @@ void LoadScene()
 	sceneManager->objects = objects;
 	sceneManager->activeCamera = activeCamera;
 
-}
+}*/
 
 int Init ( ESContext *esContext )
 {
@@ -318,20 +319,49 @@ int Init ( ESContext *esContext )
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	for (std::vector<ObjectScene>::iterator it = sceneManager->objects.begin(); it != sceneManager->objects.end(); ++it)
+	for (map<int, ObjectScene*>::iterator it = sceneManager->objects.begin(); it != sceneManager->objects.end(); it++) {
+		if (it->second->type == "normal")
+		{
+			it->second->model = resourceManager->LoadModel(it->second->modelId);
+			it->second->texture = resourceManager->LoadTexture(it->second->textureIds[0]);
+			it->second->shader = resourceManager->LoadShader(it->second->shaderId);
+		}
+		else if (it->second->type == "terrain")
+		{
+			Terrain* terrain = (Terrain*)it->second;
+			terrain->GenerateModel(camera.getPosition());
+			terrain->texture = resourceManager->LoadTexture(terrain->textureIds[0]);
+			terrain->shader = resourceManager->LoadShader(terrain->shaderId);
+			//it->second = (ObjectScene*)it->second;
+		}
+		
+	}
+	/*
+	for (int i=0; i<sceneManager->objects.size(); i++)
 	{
-		it->model = resourceManager->LoadModel(it->modelId);
+		ObjectScene* it = (ObjectScene*)sceneManager->objects[i]->second;
+
+		if (it->type == "normal")
+		{
+			it->model = resourceManager->LoadModel(it->modelId);
+		}
+		else if (it->type == "terrain")
+		{
+			Terrain* terrain = (Terrain*)it;
+			terrain->GenerateModel(camera.getPosition());
+			it = (ObjectScene*)it;
+		}
 		it->texture = resourceManager->LoadTexture(it->textureIds[0]);
 		it->shader = resourceManager->LoadShader(it->shaderId);
-	}
-	for (std::vector<Terrain>::iterator it = sceneManager->terrains.begin(); it != sceneManager->terrains.end(); ++it)
+	}*/
+	/*for (std::vector<Terrain>::iterator it = sceneManager->terrains.begin(); it != sceneManager->terrains.end(); ++it)
 	{
 		Vector3 nullVector;
 		nullVector.x = 0; nullVector.y = 0; nullVector.z = 0;
 		it->CreateModel(camera.getPosition());
 		it->texture = resourceManager->LoadTexture(it->textureIds[0]);
 		it->shader = resourceManager->LoadShader(it->shaderId);
-	}
+	}*/
 
 
 
