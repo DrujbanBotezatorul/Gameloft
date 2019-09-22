@@ -231,8 +231,10 @@
 				<b>1.0</b>
 			</color>
 			<textures>
+				<texture id="13"/>
 				<texture id="14"/>
 				<texture id="15"/>
+				<texture id="16"/>
 				<!--adaugati texturile-->
 			</textures>
 			<position>
@@ -251,7 +253,7 @@
 				<z>1.0</z>
 			</scale>
 			<number>40</number>
-			<dimension>1000</dimension>
+			<dimension>10</dimension>
 			<offset>-200</offset>
 			<lights>
 				<light>1</light>

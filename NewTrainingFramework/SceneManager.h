@@ -25,7 +25,7 @@ public:
 
 	void Init();//initializari - pot fi si in constructor
 	void Draw(ESContext*, Matrix, Vector3);
-	void Update();
+	void Update(Vector3);
 	static SceneManager* getInstance();
 	void metodaInstanta();//o metoda oarecare, nestatica
 	void freeResources();//eliberarea zonelor de memorie alocate dinamic - se poate realiza si in destructor

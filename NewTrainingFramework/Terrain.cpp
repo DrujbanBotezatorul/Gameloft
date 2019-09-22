@@ -13,11 +13,8 @@ Terrain::~Terrain()
 
 void Terrain::GenerateModel(Vector3 position)
 {
-	vector<Vertex> vertices;
-	vector<unsigned short> indices;
-
-	Vector3 center, currentPos, pos, norm, binorm, tgt;
-	Vector2 uv;
+	Vector3 currentPos, pos, norm, binorm, tgt;
+	Vector2 uv, uvBlend;
 
 	center.x = position.x;
 	center.y = offsetY;
@@ -37,9 +34,20 @@ void Terrain::GenerateModel(Vector3 position)
 
 			pos.x = currentPos.x;
 			pos.z = currentPos.z;
+			norm.x = 0;
+			norm.y = 1;
+			norm.z = 0;
+			binorm.x = 0;
+			binorm.y = 1;
+			binorm.z = 0;
+			tgt.x = 0;
+			tgt.y = 1;
+			tgt.z = 0;
 			uv.x = i;
 			uv.y = j;
-			vertices.push_back(Vertex(pos, uv));
+			uvBlend.x = (float)i / (float)(nrCells+1);
+			uvBlend.y = (float)j / (float)(nrCells+1);
+			vertices.push_back(Vertex(pos, norm, binorm, tgt, uv, uvBlend));
 
 			a[i][j] = k++;
 
@@ -77,9 +85,69 @@ void Terrain::GenerateModel(Vector3 position)
 
 	glGenBuffers(1, &model->indicesId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->indicesId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->nrIndices * sizeof(unsigned short), indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->nrIndices * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+
+void Terrain::Update(Vector3 position)
+{
+	int i;
+
+	if (abs(position.x - center.x) > dimCells)
+	{
+		if (position.x > center.x)
+		{
+			for (i = 0; i < vertices.size(); i++)
+			{
+				vertices[i].pos.x += dimCells;
+				vertices[i].uvBlend.y += 1 / (float)(nrCells+1);
+			}
+
+			center.x += dimCells;
+		}
+		else
+		{
+			for (i = 0; i < vertices.size(); i++)
+			{
+				vertices[i].pos.x -= dimCells;
+				vertices[i].uvBlend.y -= 1 / (float)(nrCells+1);
+			}
+
+			center.x -= dimCells;
+		}
+	}
+
+	if (abs(position.z - center.z) > dimCells)
+	{
+		if (position.z > center.z)
+		{
+			for (i = 0; i < vertices.size(); i++)
+			{
+				vertices[i].pos.z += dimCells;
+				vertices[i].uvBlend.x += 1 / nrCells;
+			}
+
+			center.z += dimCells;
+		}
+		else
+		{
+			for (i = 0; i < vertices.size(); i++)
+			{
+				vertices[i].pos.z -= dimCells;
+				vertices[i].uvBlend.x -= 1 / nrCells;
+			}
+
+			center.z -= dimCells;
+		}
+	}
+
+	glGenBuffers(1, &model->verticesId);
+	glBindBuffer(GL_ARRAY_BUFFER, model->verticesId);
+	glBufferData(GL_ARRAY_BUFFER, model->nrVertices * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+}
+
 /*
 void Terrain::Draw(Vector3 position)
 {

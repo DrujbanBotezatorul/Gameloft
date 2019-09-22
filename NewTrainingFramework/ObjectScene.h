@@ -17,12 +17,13 @@ public:
 	vector<int> textureIds;
 	Vector3 colors, position, rotation, scale;
 	ModelManager* model;
-	TextureManager* texture;
+	vector<TextureManager*> texture;
 	ShaderManager* shader;
 	bool depthTest;
 
 	void GenerateModel();
 	void Draw(Matrix);
+	virtual void Update();
 
 	ObjectScene();
 	~ObjectScene();

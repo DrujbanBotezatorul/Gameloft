@@ -323,14 +323,19 @@ int Init ( ESContext *esContext )
 		if (it->second->type == "normal")
 		{
 			it->second->model = resourceManager->LoadModel(it->second->modelId);
-			it->second->texture = resourceManager->LoadTexture(it->second->textureIds[0]);
+			TextureManager* texture = resourceManager->LoadTexture(it->second->textureIds[0]);
+			it->second->texture.push_back(texture);
 			it->second->shader = resourceManager->LoadShader(it->second->shaderId);
 		}
 		else if (it->second->type == "terrain")
 		{
 			Terrain* terrain = (Terrain*)it->second;
 			terrain->GenerateModel(camera.getPosition());
-			terrain->texture = resourceManager->LoadTexture(terrain->textureIds[0]);
+			for (int i = 0; i < terrain->textureIds.size(); i++)
+			{
+				TextureManager* texture = resourceManager->LoadTexture(it->second->textureIds[i]);
+				it->second->texture.push_back(texture);
+			}
 			terrain->shader = resourceManager->LoadShader(terrain->shaderId);
 			//it->second = (ObjectScene*)it->second;
 		}
@@ -482,6 +487,7 @@ void Draw ( ESContext *esContext )
 void Update ( ESContext *esContext, float deltaTime )
 {
 	camera.updateDeltaTime(deltaTime);
+	sceneManager->Update(camera.getPosition());
 
 	alpha += pas;
 	//pas *= (-1);
@@ -500,40 +506,40 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	case('w'): 
 	case('W'):
 		{
-			camera.moveOy(-1);
+			camera.moveOz(-1);
 			break;
 		}
 	case('s'):
 	case('S'):
 		{
-			camera.moveOy(1);
+			camera.moveOz(1);
 			break;
 		}
 	case('a'):
 	case('A'):
 	{
-		camera.moveOx(-1);
+		camera.moveOx(1);
 		break;
 	}
 
 	case('d'):
 	case('D'):
 	{
-		camera.moveOx(1);
+		camera.moveOx(-1);
 		break;
 	}
 
 	case('q'):
 	case('Q'):
 	{
-		camera.moveOz(-1);
+		camera.moveOy(-1);
 		break;
 	}
 
 	case('e'):
 	case('E'):
 	{
-		camera.moveOz(1);
+		camera.moveOy(1);
 		break;
 	}
 

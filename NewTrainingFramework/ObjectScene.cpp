@@ -17,11 +17,18 @@ void ObjectScene::GenerateModel()
 
 void ObjectScene::Draw(Matrix mr)
 {
+
+	int i;
+
 	glUseProgram(shader->program);
 
 	glBindBuffer(GL_ARRAY_BUFFER, model->verticesId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->indicesId);
-	glBindTexture(GL_TEXTURE_2D, texture->textureId);
+
+	for (i = 0; i < texture.size(); i++)
+	{
+		glBindTexture(GL_TEXTURE_2D, texture[i]->textureId);
+	}
 
 	if (shader->positionAttribute != -1)
 	{
@@ -35,10 +42,23 @@ void ObjectScene::Draw(Matrix mr)
 		glVertexAttribPointer(shader->uvAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Vector3) * 4));
 	}
 
-	if (shader->textureUniform != -1)
+	if (shader->uvBlendAttribute != -1)
 	{
-		glUniform1i(shader->textureUniform, 0);
+		glEnableVertexAttribArray(shader->uvBlendAttribute);
+		glVertexAttribPointer(shader->uvBlendAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Vector3) * 4 + sizeof(Vector2)));
 	}
+
+	for (int i = 0; i < texture.size(); i++)
+	{
+		if (shader->textureUniform[i] != -1)
+		{
+			glUniform1i(shader->textureUniform[i], 0);
+		}
+		
+	}
+
+	
+
 
 	Matrix placement, rotX, rotY, rotZ, scaleMatrix, transMatrix;
 
@@ -60,5 +80,10 @@ void ObjectScene::Draw(Matrix mr)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+}
+
+void ObjectScene::Update()
+{
 
 }

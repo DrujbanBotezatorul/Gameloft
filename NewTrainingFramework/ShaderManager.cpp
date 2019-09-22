@@ -39,7 +39,11 @@ int ShaderManager::Load()
 	colorAttribute = glGetAttribLocation(program, "a_color");
 	matrixUniform = glGetUniformLocation(program, "u_rot");
 	uvAttribute = glGetAttribLocation(program, "a_uv");
-	textureUniform = glGetUniformLocation(program, "u_texture");
+	uvBlendAttribute = glGetAttribLocation(program, "a_uv_blend");
+	textureUniform[0] = glGetUniformLocation(program, "u_texture");
+	textureUniform[1] = glGetUniformLocation(program, "u_texture1");
+	textureUniform[2] = glGetUniformLocation(program, "u_texture2");
+	textureUniform[3] = glGetUniformLocation(program, "u_texture3");
 
 	return 0;
 }

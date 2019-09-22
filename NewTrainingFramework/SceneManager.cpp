@@ -282,7 +282,12 @@ void SceneManager::Draw(ESContext *esContext, Matrix mr, Vector3 position)
 	//eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
 }
 
-void SceneManager::Update()
+void SceneManager::Update(Vector3 position)
 {
-
+	for (map<int, ObjectScene*>::iterator it = objects.begin(); it != objects.end(); it++) {
+		if (it->second->type == "terrain")
+		{
+			((Terrain*)(it->second))->Update(position);
+		}
+	}
 }
